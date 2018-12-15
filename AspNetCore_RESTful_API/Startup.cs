@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LibraryApi.Entities;
 using LibraryApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -28,11 +29,13 @@ namespace LibraryApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAutoMapper();
+
             services.AddScoped<IRepository, LibraryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, LibraryContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -42,10 +45,8 @@ namespace LibraryApi
             {
                 app.UseHsts();
             }
-
-            context.EnsureSeedDataForContext();
-
-            app.UseHttpsRedirection();
+            
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

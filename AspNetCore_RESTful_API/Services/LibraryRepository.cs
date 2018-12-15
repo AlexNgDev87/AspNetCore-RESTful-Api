@@ -15,60 +15,82 @@ namespace LibraryApi.Services
             _context = context;
         }
 
-
         public void AddAuthor(Author author)
         {
-            throw new NotImplementedException();
+            author.Id = Guid.NewGuid();
+            _context.Authors.Add(author);
+
+            if (author.Books.Any())
+            {
+                foreach (var book in author.Books)
+                {
+                    book.Id = Guid.NewGuid();
+                }
+            }
+
         }
 
         public void AddBookForAuthor(Guid authorId, Book book)
         {
-            throw new NotImplementedException();
+            var author = GetAuthor(authorId);
+            if (author != null)
+            {
+                if (book.Id == Guid.Empty)
+                {
+                    book.Id = Guid.NewGuid();
+                }
+                author.Books.Add(book);
+            }
         }
 
         public bool AuthorExsts(Guid authorId)
         {
-            throw new NotImplementedException();
+            return _context.Authors.Any(a => a.Id == authorId);
         }
 
         public void DeleteAuthor(Author author)
         {
-            throw new NotImplementedException();
+            _context.Authors.Remove(author);
         }
 
         public void DeleteBook(Book book)
         {
-            throw new NotImplementedException();
+            _context.Books.Remove(book);
         }
 
         public Author GetAuthor(Guid authorId)
         {
-            throw new NotImplementedException();
+            return _context.Authors.FirstOrDefault(a => a.Id == authorId);
         }
 
         public IEnumerable<Author> GetAuthors()
         {
-            throw new NotImplementedException();
+            return _context.Authors.OrderBy(a => a.FirstName).ThenBy(a => a.LastName);
         }
 
         public IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds)
         {
-            throw new NotImplementedException();
+            return _context.Authors.Where(a => authorIds.Contains(a.Id))
+                .OrderBy(a => a.FirstName)
+                .OrderBy(a => a.LastName)
+                .ToList();
         }
 
         public Book GetBookForAuthor(Guid authorId, Guid bookId)
         {
-            throw new NotImplementedException();
+            return _context.Books
+              .Where(b => b.AuthorId == authorId && b.Id == bookId).FirstOrDefault();
         }
 
         public IEnumerable<Book> GetBooksForAuthor(Guid authorId)
         {
-            throw new NotImplementedException();
+            return _context.Books
+                        .Where(b => b.AuthorId == authorId).OrderBy(b => b.Title).ToList();
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            return (_context.SaveChanges() >= 0);
         }
 
         public void UpdateAuthor(Author author)
